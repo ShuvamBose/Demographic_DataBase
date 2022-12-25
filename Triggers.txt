@@ -1,0 +1,11 @@
+DELIMITER $$
+CREATE TRIGGER bank_amt_restrict  
+BEFORE UPDATE 
+ON banks FOR EACH ROW   
+BEGIN
+
+IF (new.amount < 500) THEN
+	signal sqlstate '45000' set message_text = "Min. amt required to be kept is 500 !"; 
+ END IF;
+ END $$   
+DELIMITER ;

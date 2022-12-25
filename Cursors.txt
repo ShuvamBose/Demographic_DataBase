@@ -1,0 +1,22 @@
+DELIMITER $$
+CREATE PROCEDURE AllUserData()
+BEGIN
+DECLARE done INT DEFAULT 0;
+DECLARE id,age,phone bigint;
+DECLARE sex varchar(2);
+DECLARE amount float;
+DECLARE name, state, pid,bankname VARCHAR(30);
+DECLARE cur CURSOR FOR SELECT user.id,user.name,age_cal(age.id),user.state,user.phone,gender.sex,passport.pid,banks.bankname, banks.amount FROM user,age,gender,passport,banks WHERE banks.id=user.id AND passport.id=user.id AND gender.id=user.id AND age.id=user.id;
+DECLARE CONTINUE HANDLER FOR NOT FOUND SET done=1;
+
+OPEN cur ;
+label: LOOP
+FETCH cur INTO id,name,age,state,phone,sex,pid,bankname,amount;
+INSERT INTO alldata VALUES (id,name,age,state,phone,sex,pid,bankname,amount) ;
+IF done = 1 THEN LEAVE label;
+
+END IF;
+END LOOP ;
+CLOSE cur;
+END $$
+DELIMITER;
